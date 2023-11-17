@@ -3,27 +3,34 @@ from langchain import HuggingFacePipeline
 from transformers import AutoTokenizer
 import transformers
 import torch
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import os
 
 
-HfFolder.save_token("huggingface access key")
+CACHE_CATALOG = os.getcwd() + "/.model_cache"
 
+
+HfFolder.save_token("hugging face api key")
+
+# model = "gpt2"
 model = "meta-llama/Llama-2-7b-chat-hf"
 
-tokenizer = AutoTokenizer.from_pretrained(model)
+tokenizer = AutoTokenizer.from_pretrained(model, cache_dir=CACHE_CATALOG)
 
 pipeline = transformers.pipeline(
     "text-generation",
     model=model,
     tokenizer=tokenizer,
     device_map="auto",
-    max_length=30,
+    max_length=1000,
     do_sample=True,
     top_k=10,
     num_return_sequences=1,
     eos_token_id=tokenizer.eos_token_id,
 )
 
-llm = HuggingFacePipeline(pipeline=pipeline, model_kwargs={'temperature':0})
+llm = HuggingFacePipeline(pipeline=pipeline, model_kwargs={'temperature':0, 'cache_dir': CACHE_CATALOG})
 
 from langchain import PromptTemplate,  LLMChain
 
@@ -43,7 +50,7 @@ prompt = PromptTemplate(template=template, input_variables=["text"])
 
 llm_chain = LLMChain(prompt=prompt, llm=llm)
 
-def classify(text):
+def classify_fn(text):
     raw_llm_answer = llm_chain.run(text)
     llm_answer = raw_llm_answer.lower()
     if "neutral" in llm_answer:
@@ -55,23 +62,17 @@ def classify(text):
     else:
         raise ValueError(f"Invalid response from the LLM. Response: {raw_llm_answer}")
 
-
-
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-
-
 app = Flask(__name__)
 CORS(app)
 
 @app.route('/classify', methods=['POST'])
 def classify():
     text = request.json['text']
-    sentiment = classify(text)
+    sentiment = classify_fn(text)
     return jsonify({'sentiment': sentiment})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=3000)
 
 
 
