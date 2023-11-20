@@ -1,11 +1,12 @@
 class Classifier:
-    def __init__(self, model, llm_chain):
-        self.llm_chain = llm_chain
-        self.model = model
+    def __init__(self):
+        self.llm_chain = None
 
+    def set_llm_chain(self, llm_chain):
+        self.llm_chain = llm_chain
+        raw_llm_answer = self.llm_chain.run(text)
 
     def classify(self, text):
-        raw_llm_answer = self.llm_chain.run(text)
         llm_answer = raw_llm_answer.lower()
         if "neutral" in llm_answer:
             return 0
