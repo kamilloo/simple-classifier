@@ -1,2 +1,4 @@
 .idea/
 .model_cache/
+__pycache__/
+.env
