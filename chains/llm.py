@@ -1,20 +1,9 @@
-from llms.openia import OpenAI
-from llms.hugging_face import HuggingFace
 from langchain import PromptTemplate,  LLMChain as LLMChainInterface
-import os
-from dotenv import load_dotenv
-from enums.llm_source import LlmSource
+from llms.LlmFactory import LlmFactory
 
 class LlmChain:
     def __init__(self):
-
-        load_dotenv()
-
-        llm_source = os.getenv("LLM_SOURCE")
-        if llm_source == LlmSource.EXTERNAL.value:
-            self._llm = OpenAI()
-        else:
-            self._llm = HuggingFace()
+        self._llm = LlmFactory().create()
 
     def run(self, text: str):
 

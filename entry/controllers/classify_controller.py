@@ -2,6 +2,7 @@ from flask import Flask as app, request, jsonify
 
 from usecases.classify import Classify
 
+
 class ClassifyController:
 
     @app.route('/classify', methods=['POST'])
