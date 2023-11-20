@@ -8,9 +8,12 @@ import unittest
 class ClassifyTest(unittest.TestCase):
 
     def test_classify(self):
-        classifier = Classifier()
-        llm_chain = LlmChain()
 
-        classify = Classify(classifier=classifier, llm_chain=llm_chain)
+        #Given
+        classify = Classify()
 
-        self.assertEqual(classify.execute(review='positive review'), rs.POSITIVE.value)
+        #When
+        classified = classify.execute(review='positive review')
+
+        #Then
+        self.assertEqual(classified, rs.POSITIVE.value)

@@ -2,20 +2,22 @@ from langchain.llms import OpenAI
 import os
 from dotenv import load_dotenv
 from huggingface_hub.hf_api import HfFolder
+from langchain import HuggingFacePipeline
+from transformers import AutoTokenizer
+import transformers
+from llms.llm import Llm
 
+CACHE_CATALOG = os.getcwd() + "/.model_cache"
 
-class Llm:
+class HuggingFace(Llm):
     def __init__(self):
-        CACHE_CATALOG = os.getcwd() + "/.model_cache"
         load_dotenv()
         hf_api_key = os.getenv("HF_API_KEY")
-
         HfFolder.save_token(hf_api_key)
 
     def get_llm(self):
 
-        model = "gpt2"
-        # model = "meta-llama/Llama-2-7b-chat-hf"
+        model = os.getenv("MODEL_ID")
 
         tokenizer = AutoTokenizer.from_pretrained(model, cache_dir=CACHE_CATALOG)
 
@@ -31,5 +33,5 @@ class Llm:
             eos_token_id=tokenizer.eos_token_id,
         )
 
-        llm = HuggingFacePipeline(pipeline=pipeline, model_kwargs={'temperature': 0, 'cache_dir': CACHE_CATALOG})
+        return HuggingFacePipeline(pipeline=pipeline, model_kwargs={'temperature': 0, 'cache_dir': CACHE_CATALOG})
 

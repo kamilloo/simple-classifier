@@ -1,12 +1,22 @@
 from llms.openia import OpenAI
+from llms.hugging_face import HuggingFace
 from langchain import PromptTemplate,  LLMChain as LLMChainInterface
+import os
+from dotenv import load_dotenv
+from enums.llm_source import LlmSource
 
 class LlmChain:
     def __init__(self):
-        self._llm = OpenAI()
+
+        load_dotenv()
+
+        llm_source = os.getenv("LLM_SOURCE")
+        if llm_source == LlmSource.EXTERNAL.value:
+            self._llm = OpenAI()
+        else:
+            self._llm = HuggingFace()
 
     def run(self, text: str):
-
 
         template = """Classify the text into neutral, negative, or positive. Reply with only one word: Positive, Negative, or Neutral.
 
