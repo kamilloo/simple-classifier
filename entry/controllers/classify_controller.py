@@ -1,11 +1,12 @@
 from flask import Flask as app, request, jsonify
 
+from usecases.classify import Classify
+
 class ClassifyController:
-    def __init__(self, model):
-        self.model = model
 
     @app.route('/classify', methods=['POST'])
     def classify(self):
         text = request.json['text']
-        sentiment = classify_fn(text)
+        classify = Classify()
+        sentiment = classify.execute(text)
         return jsonify({'sentiment': sentiment})

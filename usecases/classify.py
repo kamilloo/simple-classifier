@@ -10,5 +10,6 @@ class Classify:
     def execute(self, review: str):
         self.llm_chain = LlmChain()
         self.classifier = Classifier()
+
         raw = self.llm_chain.run(review)
         return self.classifier.classify(raw)
