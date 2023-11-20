@@ -1,9 +1,13 @@
-from langchain.llms import OpenAI
-from llm import Llm
+import os
+from langchain.llms import OpenAI as OpenAPI
+from llms.llm import Llm
+from dotenv import load_dotenv
 
 class OpenAI(Llm):
     def __init__(self):
-        self._llm = OpenAI(model_name='text-davinci-003')
+        load_dotenv()
+
+        self._llm = OpenAPI(model_name='text-davinci-003')
 
     def get_llm(self):
         return self._llm

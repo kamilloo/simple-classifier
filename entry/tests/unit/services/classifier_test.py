@@ -13,7 +13,7 @@ class LlmChainFail:
         return 'not recognized'
 
 
-class TestClassifier(unittest.TestCase):
+class ClassifierTest(unittest.TestCase):
 
     def provide_test_cases(self):
         return [

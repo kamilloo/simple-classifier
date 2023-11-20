@@ -1,11 +1,12 @@
 from services.classifier import Classifier
-from tools.llm import LlmChain
+from chains.llm import LlmChain
+
 
 class Classify:
     def __init__(self, classifier: Classifier, llm_chain: LlmChain):
+        self.llm_chain = llm_chain
         self.classifier = classifier
-        self.classifier.set_llm_chain()
 
-
-    def execute(self, text):
-        return self.classifier.classify(text)
+    def execute(self, review: str):
+        raw = self.llm_chain.run(review)
+        return self.classifier.classify(raw)
